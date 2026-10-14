@@ -522,6 +522,12 @@ body {background:
   .reading-detail{padding:15px 16px;min-height:110px}
   .reading-detail p{font-size:13px}
 }
+
+/* 洗牌、选牌和揭牌前统一使用本地牌背素材。 */
+.deck-card,.choice-card,.hero-back{
+  padding:0;
+  background:#fbf9e9 url("./image/Card.png") center / 100% 100% no-repeat;
+}
 </style>
 </head>
 <body>
@@ -558,16 +564,14 @@ body {background:
     <div class="deck" id="deck" aria-label="塔罗牌堆">
       <div class="deck-card"></div>
       <div class="deck-card"></div>
-      <div class="deck-card"><div class="back-pattern"><span>✦</span></div></div>
+      <div class="deck-card"></div>
     </div>
 
     <div class="choice-layer" id="choiceLayer"></div>
 
     <div class="hero-card" id="heroCard">
       <div class="hero-inner" id="heroInner">
-        <div class="hero-back">
-          <div class="back-pattern"><span>✦</span></div>
-        </div>
+        <div class="hero-back"></div>
         <div class="hero-front">
           <div class="face-shell" id="faceShell">
             <div class="hero-num" id="heroNum">0</div>
@@ -885,7 +889,6 @@ function fanChoices(){
   currentChoiceIndexes.forEach((idx,i)=>{
     const c=document.createElement("div");
     c.className="choice-card";
-    c.innerHTML='<div class="back-pattern"><span>✦</span></div>';
     c.style.transform=`translate(${xs[i]}px,${ys[i]}px) rotate(${angles[i]}deg) scale(.72)`;
     c.dataset.index=idx;
     c.addEventListener("click",()=>chooseCard(c,idx));
