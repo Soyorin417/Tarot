@@ -523,14 +523,94 @@ body {background:
   .reading-detail p{font-size:13px}
 }
 
-/* 洗牌、选牌和揭牌前统一使用本地牌背素材。 */
-.deck-card,.choice-card,.hero-back{
-  padding:0;
-  background:#fbf9e9 url("./image/Card.png") center / 100% 100% no-repeat;
-}
+/* 同一张可展开的 SVG 牌背用于洗牌、选牌和揭牌前。 */
+.deck-card,.choice-card,.hero-back{padding:0;background:#141017}
+.card-back-art{display:block;width:100%;height:100%;pointer-events:none}
+.card-back-art .part{transition:transform .72s cubic-bezier(.2,.85,.14,1),opacity .55s ease;transform-box:view-box}
+.card-back-art .core{transform-origin:140px 200px;transition:transform .72s cubic-bezier(.2,.85,.14,1)}
+.card-back-art .expansion{opacity:.25;transition:opacity .5s ease .03s}
+.card-back-art .rail{opacity:.52;transition:opacity .55s ease}
+.card-back-surface:is(:hover,:focus-visible,.selected) .tl{transform:translate(-16px,-19px)}
+.card-back-surface:is(:hover,:focus-visible,.selected) .tr{transform:translate(16px,-19px)}
+.card-back-surface:is(:hover,:focus-visible,.selected) .bl{transform:translate(-16px,19px)}
+.card-back-surface:is(:hover,:focus-visible,.selected) .br{transform:translate(16px,19px)}
+.card-back-surface:is(:hover,:focus-visible,.selected) .wing-l{transform:translate(-22px,0)}
+.card-back-surface:is(:hover,:focus-visible,.selected) .wing-r{transform:translate(22px,0)}
+.card-back-surface:is(:hover,:focus-visible,.selected) .wing-t{transform:translate(0,-21px)}
+.card-back-surface:is(:hover,:focus-visible,.selected) .wing-b{transform:translate(0,21px)}
+.card-back-surface:is(:hover,:focus-visible,.selected) .line-l{transform:translate(-9px,-5px)}
+.card-back-surface:is(:hover,:focus-visible,.selected) .line-r{transform:translate(9px,5px)}
+.card-back-surface:is(:hover,:focus-visible,.selected) .core{transform:scale(1.17)}
+.card-back-surface:is(:hover,:focus-visible,.selected) .expansion{opacity:.96}
+.card-back-surface:is(:hover,:focus-visible,.selected) .rail{opacity:.95}
+.choice-card:focus-visible{outline:3px solid var(--red);outline-offset:5px}
+@media(prefers-reduced-motion:reduce){.card-back-art .part,.card-back-art .core,.card-back-art .expansion,.card-back-art .rail{transition-duration:.01ms!important}}
 </style>
 </head>
 <body>
+<template id="cardBackTemplate">
+<svg class="card-back-art" viewBox="0 0 280 400" preserveAspectRatio="none" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <clipPath id="cardBackClip"><rect x="21" y="21" width="238" height="358" rx="2"/></clipPath>
+    <linearGradient id="cardBackPlate" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#211924"/><stop offset="1" stop-color="#141017"/></linearGradient>
+  </defs>
+  <rect width="280" height="400" rx="10" fill="url(#cardBackPlate)"/>
+  <rect x="11" y="11" width="258" height="378" rx="4" fill="none" stroke="#F3E5D4" stroke-width="1.8"/>
+  <rect x="18" y="18" width="244" height="364" rx="2" fill="none" stroke="#897B7B" stroke-width=".7"/>
+  <g stroke="#EEDCCC" fill="none" stroke-width="1.2">
+    <path d="M30 73V30H75 M205 30H250V73 M30 327V370H75 M205 370H250V327"/>
+  </g>
+  <g fill="#F12D4F"><path d="M140 35L147 46L140 57L133 46Z"/><path d="M140 365L147 354L140 343L133 354Z"/></g>
+  <g clip-path="url(#cardBackClip)">
+    <g stroke="#D4A47F" fill="none" stroke-width=".65" opacity=".26">
+      <path d="M30 126L250 275 M30 275L250 126 M71 33L209 367 M209 33L71 367"/>
+    </g>
+    <g fill="none" stroke-linecap="square" stroke-linejoin="miter">
+      <g class="part tl"><path d="M140 100L65 200" stroke="#F32D4E" stroke-width="7"/><path d="M138 117L83 189" stroke="#B41D36" stroke-width="1.6"/></g>
+      <g class="part tr"><path d="M140 100L215 200" stroke="#F32D4E" stroke-width="7"/><path d="M142 117L197 189" stroke="#B41D36" stroke-width="1.6"/></g>
+      <g class="part bl"><path d="M65 200L140 300" stroke="#F32D4E" stroke-width="7"/><path d="M83 211L138 283" stroke="#B41D36" stroke-width="1.6"/></g>
+      <g class="part br"><path d="M215 200L140 300" stroke="#F32D4E" stroke-width="7"/><path d="M197 211L142 283" stroke="#B41D36" stroke-width="1.6"/></g>
+    </g>
+    <g class="part wing-l" fill="none" stroke="#E8C4A0">
+      <path d="M65 169L38 186L65 200L38 214L65 231" stroke-width="1.9"/>
+      <path d="M38 186L51 186 M38 214L51 214" stroke="#F32D4E" stroke-width="4"/>
+    </g>
+    <g class="part wing-r" fill="none" stroke="#E8C4A0">
+      <path d="M215 169L242 186L215 200L242 214L215 231" stroke-width="1.9"/>
+      <path d="M242 186L229 186 M242 214L229 214" stroke="#F32D4E" stroke-width="4"/>
+    </g>
+    <g class="part wing-t" fill="none" stroke="#E8C4A0">
+      <path d="M107 119L140 80L173 119" stroke-width="1.5"/>
+      <path d="M115 109L140 91L165 109" stroke="#F32D4E" stroke-width="2"/>
+    </g>
+    <g class="part wing-b" fill="none" stroke="#E8C4A0">
+      <path d="M107 281L140 320L173 281" stroke-width="1.5"/>
+      <path d="M115 291L140 309L165 291" stroke="#F32D4E" stroke-width="2"/>
+    </g>
+    <g class="part line-l" fill="none" stroke="#D0A578" stroke-width="1.25">
+      <path d="M42 129H83 M47 137H72 M48 271H87 M48 279H68"/>
+      <path d="M70 145L88 159 M70 255L88 241" stroke="#F32D4E" stroke-width="1.4"/>
+    </g>
+    <g class="part line-r" fill="none" stroke="#D0A578" stroke-width="1.25">
+      <path d="M197 129H238 M208 137H233 M193 271H232 M212 279H232"/>
+      <path d="M210 145L192 159 M210 255L192 241" stroke="#F32D4E" stroke-width="1.4"/>
+    </g>
+    <g class="expansion" fill="none" stroke="#F0DCC4" stroke-width="1.1">
+      <path d="M140 141V161 M140 239V259 M85 200H108 M172 200H195"/>
+      <path d="M91 151L112 172 M189 151L168 172 M91 249L112 228 M189 249L168 228" stroke="#D49D6C"/>
+    </g>
+    <g class="core">
+      <path d="M140 169L147 193L171 200L147 207L140 231L133 207L109 200L133 193Z" fill="#F0E4D2"/>
+      <path d="M140 186L143.5 196.5L154 200L143.5 203.5L140 214L136.5 203.5L126 200L136.5 196.5Z" fill="#F32D4E"/>
+      <circle cx="140" cy="200" r="5" fill="#211924"/>
+      <circle cx="140" cy="200" r="2.1" fill="#F0E4D2"/>
+    </g>
+  </g>
+  <g class="rail" fill="none" stroke="#D6AF88" stroke-width="1.2">
+    <path d="M56 83V106 M224 294V317 M224 83V106 M56 294V317"/>
+  </g>
+</svg>
+</template>
 <div id="threeBg" aria-hidden="true"></div>
 <div class="bg-layer">
   <div class="aurora a"></div><div class="aurora b"></div><div class="aurora c"></div>
@@ -799,6 +879,19 @@ const els={
   mask:$("editorMask"), select:$("cardSelect"), toast:$("toast")
 };
 
+let cardBackSerial=0;
+function mountCardBack(element){
+  const art=$("cardBackTemplate").content.querySelector("svg").cloneNode(true);
+  const suffix=++cardBackSerial;
+  art.querySelector("#cardBackClip").id=`cardBackClip-${suffix}`;
+  art.querySelector("#cardBackPlate").id=`cardBackPlate-${suffix}`;
+  art.querySelector('[clip-path="url(#cardBackClip)"]').setAttribute("clip-path",`url(#cardBackClip-${suffix})`);
+  art.querySelector('[fill="url(#cardBackPlate)"]').setAttribute("fill",`url(#cardBackPlate-${suffix})`);
+  element.classList.add("card-back-surface");
+  element.replaceChildren(art);
+}
+document.querySelectorAll(".deck-card,.hero-back").forEach(mountCardBack);
+
 function deepClone(o){return JSON.parse(JSON.stringify(o))}
 function loadDeck(){
   try{
@@ -887,8 +980,11 @@ function fanChoices(){
   const xs=[-240,-165,-85,0,85,165,240].map(x=>Math.round(x*spread));
   const ys=[50,20,2,-5,2,20,50];
   currentChoiceIndexes.forEach((idx,i)=>{
-    const c=document.createElement("div");
+    const c=document.createElement("button");
+    c.type="button";
     c.className="choice-card";
+    c.setAttribute("aria-label",`选择第 ${i+1} 张牌`);
+    mountCardBack(c);
     c.style.transform=`translate(${xs[i]}px,${ys[i]}px) rotate(${angles[i]}deg) scale(.72)`;
     c.dataset.index=idx;
     c.addEventListener("click",()=>chooseCard(c,idx));
